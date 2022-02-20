@@ -1,23 +1,36 @@
 const axios = require('axios');
 
 // Setting up the infura connection for the NLL smart contract
-const abi = ([{ "inputs": [{ "internalType": "address", "name": "initialPhunksAddress", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }], "name": "Paused", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }, { "indexed": true, "internalType": "address", "name": "fromAddress", "type": "address" }], "name": "PhunkBidEntered", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }, { "indexed": true, "internalType": "address", "name": "fromAddress", "type": "address" }], "name": "PhunkBidWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }, { "indexed": true, "internalType": "address", "name": "fromAddress", "type": "address" }, { "indexed": true, "internalType": "address", "name": "toAddress", "type": "address" }], "name": "PhunkBought", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }], "name": "PhunkNoLongerForSale", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "minValue", "type": "uint256" }, { "indexed": true, "internalType": "address", "name": "toAddress", "type": "address" }], "name": "PhunkOffered", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }], "name": "Unpaused", "type": "event" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "internalType": "uint256", "name": "minPrice", "type": "uint256" }], "name": "acceptBidForPhunk", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }], "name": "buyPhunk", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }], "name": "enterBidForPhunk", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "internalType": "uint256", "name": "minSalePriceInWei", "type": "uint256" }], "name": "offerPhunkForSale", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "internalType": "uint256", "name": "minSalePriceInWei", "type": "uint256" }, { "internalType": "address", "name": "toAddress", "type": "address" }], "name": "offerPhunkForSaleToAddress", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "pendingWithdrawals", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "phunkBids", "outputs": [{ "internalType": "bool", "name": "hasBid", "type": "bool" }, { "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "internalType": "address", "name": "bidder", "type": "address" }, { "internalType": "uint256", "name": "value", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }], "name": "phunkNoLongerForSale", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "phunksAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "phunksOfferedForSale", "outputs": [{ "internalType": "bool", "name": "isForSale", "type": "bool" }, { "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }, { "internalType": "address", "name": "seller", "type": "address" }, { "internalType": "uint256", "name": "minValue", "type": "uint256" }, { "internalType": "address", "name": "onlySellTo", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newPhunksAddress", "type": "address" }], "name": "setPhunksContract", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "withdraw", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "phunkIndex", "type": "uint256" }], "name": "withdrawBidForPhunk", "outputs": [], "stateMutability": "nonpayable", "type": "function" }])
+const abi = ([{"inputs":[{"internalType":"address","name":"initialPhunksAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":true,"internalType":"address","name":"fromAddress","type":"address"}],"name":"PhunkBidEntered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":true,"internalType":"address","name":"fromAddress","type":"address"}],"name":"PhunkBidWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":true,"internalType":"address","name":"fromAddress","type":"address"},{"indexed":true,"internalType":"address","name":"toAddress","type":"address"}],"name":"PhunkBought","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"phunkIndex","type":"uint256"}],"name":"PhunkNoLongerForSale","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"minValue","type":"uint256"},{"indexed":true,"internalType":"address","name":"toAddress","type":"address"}],"name":"PhunkOffered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"internalType":"uint256","name":"minPrice","type":"uint256"}],"name":"acceptBidForPhunk","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"}],"name":"buyPhunk","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"}],"name":"enterBidForPhunk","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"internalType":"uint256","name":"minSalePriceInWei","type":"uint256"}],"name":"offerPhunkForSale","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"internalType":"uint256","name":"minSalePriceInWei","type":"uint256"},{"internalType":"address","name":"toAddress","type":"address"}],"name":"offerPhunkForSaleToAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"pendingWithdrawals","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"phunkBids","outputs":[{"internalType":"bool","name":"hasBid","type":"bool"},{"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"internalType":"address","name":"bidder","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"}],"name":"phunkNoLongerForSale","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"phunksAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"phunksOfferedForSale","outputs":[{"internalType":"bool","name":"isForSale","type":"bool"},{"internalType":"uint256","name":"phunkIndex","type":"uint256"},{"internalType":"address","name":"seller","type":"address"},{"internalType":"uint256","name":"minValue","type":"uint256"},{"internalType":"address","name":"onlySellTo","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newPhunksAddress","type":"address"}],"name":"setPhunksContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"phunkIndex","type":"uint256"}],"name":"withdrawBidForPhunk","outputs":[],"stateMutability":"nonpayable","type":"function"}])
 var Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.WebsocketProvider(
-    'wss://mainnet.infura.io/ws/v3/24397b55c0444066a21a3396eebc0434',
-    {
-        clientConfig: {
+
+const getProvider = () => {
+    const provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/24397b55c0444066a21a3396eebc0434', {clientConfig: {
             maxReceivedFrameSize: 100000000,
             maxReceivedMessageSize: 100000000,
-        }
-    }
-));
+            keepalive: true,
+            keepaliveInterval: 60000	// milliseconds
+        }})
+    provider.on('connect', () => console.log('WS Connected'))
+    provider.on('error', e => {
+      console.error('WS Error', e)
+      web3.setProvider(getProvider())
+    })
+    provider.on('end', e => {
+      console.error('WS End', e)
+      web3.setProvider(getProvider())
+    })
+
+    return provider
+  }
+
+const web3 = new Web3(getProvider())
 var contractAddress = ('0xd6c037bE7FA60587e174db7A6710f7635d2971e7');
 var NLLContract = new web3.eth.Contract(abi, contractAddress);
 
 // backend endpoint for updating a specific phunk
 const update = (id, data) => {
-    axios.put(`http://localhost:8080/api/phunks/mongo/${id}`, data);
+    axios.put(`http://localhost:8082/api/phunks/mongo/${id}`, data);
 }
 
 // Updating NLL listings in DB
@@ -25,7 +38,7 @@ const update = (id, data) => {
 const onMarket = () => {
     
 
-    axios.get(`http://localhost:8080/api/phunks/onMarket`).then(async (res, err) => {
+    axios.get(`http://localhost:8082/api/phunks/onMarket`).then(async (res, err) => {
         // console.log(res.data)
         res.data.forEach(async (order) => {
             const data = order;
@@ -44,25 +57,27 @@ const onMarket = () => {
                 Phunk.listingPrice = null;
                 Phunk.order_created = null;
                 Phunk.date_created = null;
-                axios.get(`http://localhost:8080/api/phunks/${token}`).then((res, err) => {
-                    let _id = res.data[0]._id;
+                try {
+                    axios.get(`http://localhost:8082/api/phunks/${token}`).then((res, err) => {
+                    let _id = res.data._id;
                     try {
                         update(_id, { $set: Phunk })
                         // console.log(`Succesfully updated unlisting of Phunk # ${token}`)
                     }
                     catch {
-                        console.log(`Error updating Phuhnk #${token}` + " " + err)
+                        console.log(`Error updating Phunk #${token}` + " " + err)
                         return;
                     }
                 })
+                } catch (e){
+                    console.log(e)
+                }
             }
             if (data.market === 'NLL') {
-                var checkListing = await NLLContract.methods.phunksOfferedForSale(token).call((res) => {
-                    return res;
-                })
+                var checkListing = await NLLContract.methods.phunksOfferedForSale(token).call().catch(e=>{console.log(e)})
                 let res = (await checkListing);
-
-                if (res.isForSale === true) {
+                // console.log(res)
+                if (res.isForSale == true) {
                     let Phunk = {
                         onMarket: Boolean,
                         market: String,
@@ -74,8 +89,8 @@ const onMarket = () => {
                     Phunk.listingPrice = res.minValue / 1e18;
                     Phunk.onMarket = true;
                     try {
-                        axios.get(`http://localhost:8080/api/phunks?name=${token}`).then((res) => {
-                            _id = res.data[0]._id;
+                        axios.get(`http://localhost:8082/api/phunks/${token}`).then((res) => {
+                            _id = res.data._id;
                             update(_id, { $set: Phunk });
                             // console.log(`Succesfully updated NLL listing of Phunk # ${token}`)
                         })
@@ -88,14 +103,16 @@ const onMarket = () => {
                     let Phunk = {
                         onMarket: Boolean,
                         market: String,
-                        listingPrice: Number
+                        listingPrice: Number,
+                        owner: String
                     }
                     Phunk.market = null;
                     Phunk.listingPrice = null;
                     Phunk.onMarket = false;
+                    Phunk.owner = data.owner;
                     try {
-                        axios.get(`http://localhost:8080/api/phunks?name=${token}`).then((res) => {
-                            _id = res.data[0]._id;
+                        axios.get(`http://localhost:8082/api/phunks/`).then((res) => {
+                            _id = res.data._id;
                             update(_id, { $set: Phunk });
                             // console.log(`Succesfully updated NLL delisting of Phunk # ${token}`)
                         })
@@ -108,7 +125,7 @@ const onMarket = () => {
 
             }
         })
-    })
+    }).catch(e=>{console.log(e)})
     console.log('Finished updating onMarket registry...');
     return;
 }
@@ -119,9 +136,9 @@ function nll() {
     const eventQuery = async () => {
 
         // Retrieve most recent blockheight gathered to use for the web3 query parameter.
-        var blockHeight = axios.get('http://localhost:8080/api/phunks?market=NLL&limit=1&sortBy=order_created')
+        var blockHeight = axios.get('http://localhost:8082/api/phunks?market=NLL&limit=1&sortBy=order_created')
             .then(res => {
-                return res.data[0].order_created;
+                return res.data.order_created;
             })
 
         let options = {
@@ -154,8 +171,8 @@ function nll() {
                             // Phunk.owner = data.seller;
                             Phunk.listingPrice = data.returnValues.minValue / 1e18;
                             Phunk.onMarket = true;
-                            axios.get(`http://localhost:8080/api/phunks?name=${data.returnValues.phunkIndex}`).then((res) => {
-                                _id = res.data[0]._id;
+                            axios.get(`http://localhost:8082/api/phunks/${data.returnValues.phunkIndex}`).then((res) => {
+                                _id = res.data._id;
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NLL listing of Phunk # ${data.returnValues.phunkIndex}`)
@@ -180,8 +197,8 @@ function nll() {
                             Phunk.hasBid = true;
                             Phunk.bidder = data.returnValues.fromAddress;
                             Phunk.bidValue = data.returnValues.value / 1e18;
-                            axios.get(`http://localhost:8080/api/phunks?name=${data.returnValues.phunkIndex}`).then((res) => {
-                                _id = res.data[0]._id;
+                            axios.get(`http://localhost:8082/api/phunks/${data.returnValues.phunkIndex}`).then((res) => {
+                                _id = res.data._id;
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NLL bid of Phunk # ${data.returnValues.phunkIndex}`)
@@ -206,8 +223,8 @@ function nll() {
                             Phunk.market = null;
                             Phunk.order_created = null;
                             Phunk.listingPrice = null;
-                            axios.get(`http://localhost:8080/api/phunks?name=${data.returnValues.phunkIndex}`).then((res) => {
-                                _id = res.data[0]._id;
+                            axios.get(`http://localhost:8082/api/phunks/${data.returnValues.phunkIndex}`).then((res) => {
+                                _id = res.data._id;
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NLL delisting of Phunk # ${data.returnValues.phunkIndex}`)
@@ -232,8 +249,8 @@ function nll() {
                             Phunk.bidValue = null;
                             Phunk.bidder = null;
                             Phunk.bid_created = null;
-                            axios.get(`http://localhost:8080/api/phunks?name=${data.returnValues.phunkIndex}`).then((res) => {
-                                _id = res.data[0]._id;
+                            axios.get(`http://localhost:8082/api/phunks/${data.returnValues.phunkIndex}`).then((res) => {
+                                _id = res.data._id;
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NLL bid withdraw of Phunk # ${data.returnValues.phunkIndex}`)
@@ -260,8 +277,8 @@ function nll() {
                             Phunk.listingPrice = null;
                             Phunk.order_created = null;
                             Phunk.owner = data.returnValues.toAddress;
-                            axios.get(`http://localhost:8080/api/phunks?name=${data.returnValues.phunkIndex}`).then((res) => {
-                                _id = res.data[0]._id;
+                            axios.get(`http://localhost:8082/api/phunks/${data.returnValues.phunkIndex}`).then((res) => {
+                                _id = res.data._id;
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NLL purchase of Phunk # ${data.returnValues.phunkIndex}`)
@@ -272,7 +289,7 @@ function nll() {
                         }
                     }
                 })
-            })
+            }).catch(e=>{console.log(e)})
         console.log('Finished fetching NLL events...')
         onMarket();
         return;
@@ -285,6 +302,70 @@ function nll() {
 function nftx() {
 
     const fetchNftx = () => {
+
+        axios.get(`https://www.phunkfinder.com/api/phunks/?market=NFTX`).then(async (res, err) => {
+        // console.log(res.data)
+        res.data.forEach(async (order) => {
+            const data = order;
+            if (err) {
+                console.log(err)
+            }
+            let token = data.name
+            if (data.market === null) {
+                let Phunk = {
+                    onMarket: Boolean,
+                    listingPrice: Number,
+                    order_created: Number,
+                    date_created: String
+                }
+                Phunk.onMarket = false;
+                Phunk.listingPrice = null;
+                Phunk.order_created = null;
+                Phunk.date_created = null;
+                try {
+                    axios.get(`http://localhost:8082/api/phunks/${token}`).then((res, err) => {
+                    let _id = res.data._id;
+                    try {
+                        update(_id, { $set: Phunk })
+                        // console.log(`Succesfully updated unlisting of Phunk # ${token}`)
+                    }
+                    catch {
+                        console.log(`Error updating Phunk #${token}` + " " + err)
+                        return;
+                    }
+                })
+                } catch (e){
+                    console.log(e)
+                }
+            }
+            if (data.market === 'NFTX') {
+                if (res.isForSale == true) {
+                    let Phunk = {
+                        onMarket: Boolean,
+                        market: String,
+                        listingPrice: Number,
+                        owner: String
+                    }
+                    Phunk.market = null;
+                    Phunk.owner = null;
+                    Phunk.listingPrice = 0;
+                    Phunk.onMarket = false;
+                    try {
+                        axios.get(`http://localhost:8082/api/phunks/${token}`).then((res) => {
+                            _id = res.data._id;
+                            update(_id, { $set: Phunk });
+                            // console.log(`Succesfully updated NLL listing of Phunk # ${token}`)
+                        })
+                    }
+                    catch (err) {
+                        console.log(err)
+                    }
+                }
+            }
+        })
+    }).catch(e=>{console.log(e)})
+    console.log('Finished updating NFTX registry...')
+
 
         const options = {
             method: 'POST',
@@ -314,7 +395,7 @@ function nftx() {
                     response.data.data.vault.holdings
                         .forEach((id) => {
                             let token = id.tokenId
-                            axios.get(`http://localhost:8080/api/phunks/${token}`).then((res) => {
+                            axios.get(`http://localhost:8082/api/phunks/${token}`).then((res) => {
                                 _id = res.data._id;
                                 Phunk.onMarket = true;
                                 Phunk.market = "NFTX";
@@ -322,6 +403,8 @@ function nftx() {
                                 update(_id, { $set: Phunk });
                                 return;
                                 // console.log(`Succesfully updated NFTX listing of Phunk # ${token}`)
+                            }).catch(error => {
+                                console.log(error);
                             })
                         });
                 })
@@ -341,6 +424,68 @@ function nftx() {
 
 function rarible() {
     const fetch = () => {
+        axios.get(`https://www.phunkfinder.com/api/phunks/?market=Rarible`).then(async (res, err) => {
+        // console.log(res.data)
+        res.data.forEach(async (order) => {
+            const data = order;
+            if (err) {
+                console.log(err)
+            }
+            let token = data.name
+            if (data.market === null) {
+                let Phunk = {
+                    onMarket: Boolean,
+                    listingPrice: Number,
+                    order_created: Number,
+                    date_created: String
+                }
+                Phunk.onMarket = false;
+                Phunk.listingPrice = null;
+                Phunk.order_created = null;
+                Phunk.date_created = null;
+                try {
+                    axios.get(`http://localhost:8082/api/phunks/${token}`).then((res, err) => {
+                    let _id = res.data._id;
+                    try {
+                        update(_id, { $set: Phunk })
+                        // console.log(`Succesfully updated unlisting of Phunk # ${token}`)
+                    }
+                    catch {
+                        console.log(`Error updating Phunk #${token}` + " " + err)
+                        return;
+                    }
+                })
+                } catch (e){
+                    console.log(e)
+                }
+            }
+            if (data.market === 'Rarible') {
+                if (res.isForSale == true) {
+                    let Phunk = {
+                        onMarket: Boolean,
+                        market: String,
+                        listingPrice: Number,
+                        owner: String
+                    }
+                    Phunk.market = null;
+                    Phunk.owner = null;
+                    Phunk.listingPrice = 0;
+                    Phunk.onMarket = false;
+                    try {
+                        axios.get(`http://localhost:8082/api/phunks/${token}`).then((res) => {
+                            _id = res.data._id;
+                            update(_id, { $set: Phunk });
+                            // console.log(`Succesfully updated NLL listing of Phunk # ${token}`)
+                        })
+                    }
+                    catch (err) {
+                        console.log(err)
+                    }
+                }
+            }
+        })
+    }).catch(e=>{console.log(e)})
+    console.log('Finished updating Rarible registry...')
         
         console.log('Fetching Rarible')
         const promise = axios.get('https://ethereum-api.rarible.org/v0.1/order/orders/sell/byCollectionAndByStatus?collection=0xf07468ead8cf26c752c676e43c814fee9c8cf402&platform=RARIBLE&size=2500');
@@ -361,7 +506,7 @@ function rarible() {
                     Phunk.listingPrice = order.makePrice;
                     Phunk.date_created = order.createdAt;
 
-                    axios.get(`http://localhost:8080/api/phunks/${token}`).then((res, err) => {
+                    axios.get(`http://localhost:8082/api/phunks/${token}`).then((res, err) => {
 
                         let _id = res.data._id;
                         Phunk.onMarket = true;
@@ -376,6 +521,8 @@ function rarible() {
                             console.log(`Error updating Phuhnk #${token}` + " " + err)
                             return;
                         }
+                    }).catch(error => {
+                        console.log(error);
                     })
                 }
             });
@@ -394,4 +541,4 @@ function gather() {
 }
 
 // gather();
-setInterval(gather, 300000)
+setInterval(gather, 30000)
