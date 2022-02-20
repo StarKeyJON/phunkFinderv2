@@ -301,8 +301,6 @@ function nll() {
 
 function nftx() {
 
-    const fetchNftx = () => {
-
         axios.get(`https://www.phunkfinder.com/api/phunks/?market=NFTX`).then(async (res, err) => {
         // console.log(res.data)
         res.data.forEach(async (order) => {
@@ -416,14 +414,11 @@ function nftx() {
         }
         console.log('Finished fetching NFTX listings...');
         return;
-    };
-    console.log('Fetching NFTX');
-    fetchNftx();
-    return;
+    
 }
 
 function rarible() {
-    const fetch = () => {
+
         axios.get(`https://www.phunkfinder.com/api/phunks/?market=Rarible`).then(async (res, err) => {
         // console.log(res.data)
         res.data.forEach(async (order) => {
@@ -529,8 +524,7 @@ function rarible() {
         })
         console.log('Finsihed fetching Rarible listings...');
         return;
-    }
-    fetch();
+
 }
 
 function gather() {
@@ -541,4 +535,4 @@ function gather() {
 }
 
 // gather();
-setInterval(gather, 30000)
+setInterval(gather, 3600000)
